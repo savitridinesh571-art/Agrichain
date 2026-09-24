@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-primary: #1B4332;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #c1ecd4;
+  --color-on-primary-container: #002114;
+  
+  --color-secondary: #D97706;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #fe932c;
+  --color-on-secondary-container: #663500;
+  
+  --color-tertiary: #C25E3E;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #6f2105;
+  --color-on-tertiary-container: #f78764;
+  
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  
+  --color-surface: #ffffff;
+  --color-on-surface: #161d17;
+  --color-surface-variant: #f3f4ed;
+  --color-on-surface-variant: #414844;
+  
+  --color-background: #FBFBEE;
+  --color-on-background: #2b332c;
+  
+  --color-outline: #E3E6DC;
+  --color-outline-variant: #c1c8c2;
+
+  --color-verified: #15803D;
+  --color-verified-bg: #DCFCE7;
+  --color-review: #B45309;
+  --color-review-bg: #FEF3C7;
+  --color-rejected: #B91C1C;
+  --color-rejected-bg: #FEE2E2;
+
+  --font-sans: "Noto Sans", sans-serif;
+  --font-heading: "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-sans);
+}
