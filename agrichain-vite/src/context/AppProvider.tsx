@@ -952,10 +952,30 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       productsRef,
       (snapshot) => {
         if (!snapshot.empty) {
-          const fetchedProducts: Product[] = snapshot.docs.map((docSnap) => ({
-            id: docSnap.id,
-            ...docSnap.data()
-          })) as Product[];
+          const fetchedProducts: Product[] = snapshot.docs.map((docSnap) => {
+            const data = docSnap.data() || {};
+            const prodName = typeof data.name === "string" ? data.name : "Fresh Produce";
+            const prodCategory = typeof data.category === "string" ? data.category : "Vegetables";
+            return {
+              id: docSnap.id,
+              name: prodName,
+              localName: typeof data.localName === "string" ? data.localName : "",
+              category: prodCategory,
+              price: typeof data.price === "number" && !isNaN(data.price) ? data.price : 0,
+              unit: typeof data.unit === "string" ? data.unit : "kg",
+              quantity: typeof data.quantity === "number" && !isNaN(data.quantity) ? data.quantity : 0,
+              farm: typeof data.farm === "string" ? data.farm : "Organic Farm",
+              location: typeof data.location === "string" ? data.location : "Maharashtra",
+              latitude: typeof data.latitude === "number" && !isNaN(data.latitude) ? data.latitude : undefined,
+              longitude: typeof data.longitude === "number" && !isNaN(data.longitude) ? data.longitude : undefined,
+              verified: Boolean(data.verified),
+              grade: typeof data.grade === "string" ? data.grade : "Grade A",
+              harvestDate: typeof data.harvestDate === "string" ? data.harvestDate : new Date().toISOString().split("T")[0],
+              description: typeof data.description === "string" ? data.description : "",
+              image: typeof data.image === "string" && data.image ? data.image : getCropImage(prodName, prodCategory),
+              soilAuditStatus: (typeof data.soilAuditStatus === "string" ? data.soilAuditStatus : "Approved") as "Approved" | "Pending" | "In Review"
+            };
+          });
           setProducts(fetchedProducts);
         }
       },
@@ -973,10 +993,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ordersRef,
       async (snapshot) => {
         if (!snapshot.empty) {
-          const fetchedOrders: Order[] = snapshot.docs.map((docSnap) => ({
-            id: docSnap.id,
-            ...docSnap.data()
-          })) as Order[];
+          const fetchedOrders: Order[] = snapshot.docs.map((docSnap) => {
+            const data = docSnap.data() || {};
+            return {
+              id: docSnap.id,
+              items: Array.isArray(data.items) ? data.items : [],
+              totalPrice: typeof data.totalPrice === "number" && !isNaN(data.totalPrice) ? data.totalPrice : 0,
+              customerName: typeof data.customerName === "string" ? data.customerName : "Customer",
+              customerPhone: typeof data.customerPhone === "string" ? data.customerPhone : "",
+              deliveryAddress: typeof data.deliveryAddress === "string" ? data.deliveryAddress : "",
+              customerLatitude: typeof data.customerLatitude === "number" && !isNaN(data.customerLatitude) ? data.customerLatitude : undefined,
+              customerLongitude: typeof data.customerLongitude === "number" && !isNaN(data.customerLongitude) ? data.customerLongitude : undefined,
+              farmerId: typeof data.farmerId === "string" ? data.farmerId : "",
+              farmerLatitude: typeof data.farmerLatitude === "number" && !isNaN(data.farmerLatitude) ? data.farmerLatitude : undefined,
+              farmerLongitude: typeof data.farmerLongitude === "number" && !isNaN(data.farmerLongitude) ? data.farmerLongitude : undefined,
+              status: (typeof data.status === "string" ? data.status : "Placed") as "Placed" | "Harvested & Packed" | "In Transit" | "Delivered",
+              createdAt: typeof data.createdAt === "string" ? data.createdAt : new Date().toISOString(),
+              trackingStep: typeof data.trackingStep === "number" && !isNaN(data.trackingStep) ? data.trackingStep : 1,
+              paymentMethod: typeof data.paymentMethod === "string" ? data.paymentMethod : "UPI",
+              paymentStatus: (typeof data.paymentStatus === "string" ? data.paymentStatus : "Paid") as "Paid" | "Pending" | "Cash on Delivery",
+              review: data.review
+            };
+          });
           setOrders(fetchedOrders);
         } else {
           // Auto-seed default sample orders into Firestore if orders collection is empty

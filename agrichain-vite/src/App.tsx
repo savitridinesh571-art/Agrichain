@@ -82,11 +82,15 @@ function MainApp() {
   );
 }
 
+import { ErrorBoundary } from "./components/ErrorBoundary";
+
 function App() {
   return (
-    <AppProvider>
-      <MainApp />
-    </AppProvider>
+    <ErrorBoundary>
+      <AppProvider>
+        <MainApp />
+      </AppProvider>
+    </ErrorBoundary>
   );
 }
 

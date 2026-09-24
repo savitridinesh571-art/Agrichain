@@ -51,12 +51,19 @@ export function Home() {
     { id: "Pulses", label: t("pulses") }
   ];
 
-  const filteredProducts = products.filter(p => {
+  const filteredProducts = (products || []).filter(p => {
+    if (!p) return false;
+    const name = (p.name || "").toLowerCase();
+    const farm = (p.farm || "").toLowerCase();
+    const location = (p.location || "").toLowerCase();
+    const localName = (p.localName || "").toLowerCase();
+    const q = (searchQuery || "").toLowerCase();
+
     const matchesSearch =
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.farm.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (p.localName && p.localName.toLowerCase().includes(searchQuery.toLowerCase()));
+      name.includes(q) ||
+      farm.includes(q) ||
+      location.includes(q) ||
+      localName.includes(q);
 
     const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
 

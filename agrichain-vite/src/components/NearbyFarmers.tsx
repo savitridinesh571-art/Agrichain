@@ -24,14 +24,18 @@ export function NearbyFarmers({ maxDistanceKm = 50, className = "" }: NearbyFarm
     : { lat: 19.2952, lng: 72.8544 }; // Default Mira-Bhayandar
 
   // Process products with distance calculation
-  const nearbyProducts = products.map((prod) => {
-    // Determine product coordinates from explicit fields or location mapping
-    const rawCoords =
-      prod.latitude && prod.longitude
-        ? { latitude: prod.latitude, longitude: prod.longitude }
-        : getCoordinatesForLocation(prod.location);
+  const nearbyProducts = (products || []).map((prod) => {
+    if (!prod) return null;
 
-    const prodCoords = { lat: rawCoords.latitude, lng: rawCoords.longitude };
+    const rawCoords =
+      typeof prod.latitude === "number" && !isNaN(prod.latitude) && typeof prod.longitude === "number" && !isNaN(prod.longitude)
+        ? { latitude: prod.latitude, longitude: prod.longitude }
+        : getCoordinatesForLocation(prod.location || "");
+
+    const lat = typeof rawCoords?.latitude === "number" && !isNaN(rawCoords.latitude) ? rawCoords.latitude : 19.2952;
+    const lng = typeof rawCoords?.longitude === "number" && !isNaN(rawCoords.longitude) ? rawCoords.longitude : 72.8544;
+
+    const prodCoords = { lat, lng };
 
     const distKm = calculateDistanceKm(
       customerCoords.lat,
@@ -43,9 +47,9 @@ export function NearbyFarmers({ maxDistanceKm = 50, className = "" }: NearbyFarm
     return {
       ...prod,
       coords: prodCoords,
-      distanceKm: distKm
+      distanceKm: isNaN(distKm) ? 0 : distKm
     };
-  });
+  }).filter((item): item is NonNullable<typeof item> => item !== null);
 
   // Sort by distance (nearest first)
   nearbyProducts.sort((a, b) => a.distanceKm - b.distanceKm);
