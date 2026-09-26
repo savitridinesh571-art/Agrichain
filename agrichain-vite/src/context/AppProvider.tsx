@@ -81,6 +81,7 @@ export interface Order {
 
 interface AppContextType {
   user: User | null;
+  isAuthLoading: boolean;
   login: (user: User) => void;
   logout: () => void;
   products: Product[];
@@ -740,6 +741,7 @@ const DEFAULT_ORDERS: Order[] = [
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   const [products, setProducts] = useState<Product[]>(() => {
     const defaultIds = new Set(DEFAULT_PRODUCTS.map(p => p.id));
@@ -881,12 +883,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (!firebaseUser) {
-        setUser(null);
-        return;
-      }
-
       try {
+        if (!firebaseUser) {
+          setUser(null);
+          return;
+        }
+
         const profileRef = doc(db, "users", firebaseUser.uid);
         const profileSnap = await getDoc(profileRef);
 
@@ -928,6 +930,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       } catch (err) {
         console.error("Error fetching user profile from Firestore:", err);
         setUser(null);
+      } finally {
+        setIsAuthLoading(false);
       }
     });
 
@@ -1262,6 +1266,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider
       value={{
         user,
+        isAuthLoading,
         login,
         logout,
         products,
