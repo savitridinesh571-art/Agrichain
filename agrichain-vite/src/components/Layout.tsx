@@ -266,12 +266,20 @@ export function Layout() {
                   </button>
                 </>
               ) : (
-                <Link
-                  to="/login"
-                  className="bg-secondary text-on-secondary px-4 py-1.5 rounded-md font-bold text-xs shadow-sm hover:opacity-90 transition"
-                >
-                  Login
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link
+                    to="/login"
+                    className="bg-primary-container text-on-primary-container px-3 py-1.5 rounded-full font-extrabold text-xs shadow-sm hover:opacity-90 transition border border-outline/30"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="bg-secondary text-on-secondary px-3.5 py-1.5 rounded-full font-extrabold text-xs shadow-sm hover:opacity-90 transition"
+                  >
+                    Register
+                  </Link>
+                </div>
               )}
             </div>
           </div>

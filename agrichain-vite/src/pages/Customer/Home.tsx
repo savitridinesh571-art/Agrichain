@@ -176,6 +176,15 @@ export function Home() {
               <ShoppingBag className="w-4 h-4" />
               <span>Explore Fresh Produce</span>
             </a>
+            {!user && (
+              <Link 
+                to="/register" 
+                className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white border border-white/30 font-black text-sm px-6 py-3.5 rounded-2xl backdrop-blur-md shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2"
+              >
+                <Users className="w-4 h-4 text-amber-300" />
+                <span>Register Account</span>
+              </Link>
+            )}
           </div>
 
           {/* Stats Grid */}
