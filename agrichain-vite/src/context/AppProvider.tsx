@@ -891,14 +891,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const profileSnap = await getDoc(profileRef);
 
         if (!profileSnap.exists()) {
-          console.warn("No Firestore profile found for:", firebaseUser.uid);
-          setUser({
-            id: firebaseUser.uid,
-            name: firebaseUser.displayName || firebaseUser.email?.split("@")[0] || "User",
-            email: firebaseUser.email || "",
-            phone: firebaseUser.phoneNumber || "",
-            role: "CUSTOMER"
-          });
+          console.warn("No Firestore profile found for:", firebaseUser.uid, "- Registration incomplete.");
+          setUser(null);
           return;
         }
 
@@ -933,13 +927,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
       } catch (err) {
         console.error("Error fetching user profile from Firestore:", err);
-        setUser({
-          id: firebaseUser.uid,
-          name: firebaseUser.displayName || firebaseUser.email?.split("@")[0] || "User",
-          email: firebaseUser.email || "",
-          phone: firebaseUser.phoneNumber || "",
-          role: "CUSTOMER"
-        });
+        setUser(null);
       }
     });
 

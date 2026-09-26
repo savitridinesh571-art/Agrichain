@@ -35,13 +35,13 @@ export function Home() {
   const { products, searchQuery, selectedCategory, setSelectedCategory, addToCart, user, t } = useAppContext();
   const navigate = useNavigate();
 
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
   // If user is a logged-in Farmer, render the Farmer Home Page directly
   if (user?.role === "FARMER") {
     return <FarmerHub />;
   }
-
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const categoryOptions = [
     { id: "All", label: t("all") },

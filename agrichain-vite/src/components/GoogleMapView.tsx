@@ -42,6 +42,8 @@ export function GoogleMapView({
   const [apiError, setApiError] = useState<string | null>(null);
   const [selectedMarker, setSelectedMarker] = useState<MapMarker | null>(null);
 
+  const markersKey = (markers || []).map(m => `${m.id}-${m.lat}-${m.lng}`).join("|");
+
   useEffect(() => {
     let isMounted = true;
     let googleMapInstance: google.maps.Map | null = null;
@@ -162,7 +164,7 @@ export function GoogleMapView({
     return () => {
       isMounted = false;
     };
-  }, [center.lat, center.lng, zoom, JSON.stringify(markers), showRoute, origin?.lat, origin?.lng, destination?.lat, destination?.lng]);
+  }, [center.lat, center.lng, zoom, markersKey, showRoute, origin?.lat, origin?.lng, destination?.lat, destination?.lng]);
 
   return (
     <div className={`relative rounded-3xl overflow-hidden border border-[#D5E5D8] shadow-md bg-[#EBF4EE] ${className}`} style={{ height }}>

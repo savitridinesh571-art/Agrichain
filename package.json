@@ -1,4 +1,10 @@
 {
+  "name": "agrichain-workspace",
+  "private": true,
+  "scripts": {
+    "build": "cd agrichain-vite && npm run build",
+    "dev": "cd agrichain-vite && npm run dev"
+  },
   "dependencies": {
     "firebase": "^12.19.0"
   }
