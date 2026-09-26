@@ -16,9 +16,12 @@ export type Role = "FARMER" | "CUSTOMER" | null;
 
 export interface User {
   id: string;
+  firstName?: string;
+  lastName?: string;
   name: string;
   phone: string;
   role: Role;
+  pincode?: string;
   location?: string;
   latitude?: number;
   longitude?: number;
@@ -902,9 +905,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
         const appUser: User = {
           id: firebaseUser.uid,
+          firstName: profile.firstName || "",
+          lastName: profile.lastName || "",
           name: profile.name || firebaseUser.displayName || "User",
           phone: profile.phone || firebaseUser.phoneNumber || "",
           role: (profile.role as Role) || "CUSTOMER",
+          pincode: profile.pincode || "",
           location: profile.location || "",
           farmName: profile.farmName || "",
           latitude: typeof profile.latitude === "number" ? profile.latitude : undefined,

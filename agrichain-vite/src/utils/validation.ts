@@ -158,6 +158,74 @@ export function validatePinCode(pinCode: string): { isValid: boolean; error: str
   return { isValid: true, error: null };
 }
 
+// First Name Validation
+export function validateFirstName(name: string): { isValid: boolean; error: string | null } {
+  const trimmed = name.trim();
+  if (!trimmed) {
+    return { isValid: false, error: "First name is required." };
+  }
+  if (!/^[\p{L}\s'\-]+$/u.test(trimmed)) {
+    return { isValid: false, error: "First name must contain alphabetic characters only." };
+  }
+  return { isValid: true, error: null };
+}
+
+// Last Name Validation
+export function validateLastName(name: string): { isValid: boolean; error: string | null } {
+  const trimmed = name.trim();
+  if (!trimmed) {
+    return { isValid: false, error: "Last name is required." };
+  }
+  if (!/^[\p{L}\s'\-]+$/u.test(trimmed)) {
+    return { isValid: false, error: "Last name must contain alphabetic characters only." };
+  }
+  return { isValid: true, error: null };
+}
+
+// Farm Name Validation
+export function validateFarmName(farmName: string): { isValid: boolean; error: string | null } {
+  const trimmed = farmName.trim();
+  if (!trimmed) {
+    return { isValid: false, error: "Farm name is required for farmers." };
+  }
+  if (trimmed.length < 2) {
+    return { isValid: false, error: "Please enter a valid farm name." };
+  }
+  return { isValid: true, error: null };
+}
+
+// User-friendly Firebase Auth Error Mapper
+export function mapFirebaseAuthError(errorCode: string): string {
+  switch (errorCode) {
+    case "auth/email-already-in-use":
+      return "Email is already registered.";
+    case "auth/invalid-email":
+      return "Invalid email address.";
+    case "auth/operation-not-allowed":
+      return "Email/password accounts are not enabled.";
+    case "auth/weak-password":
+      return "Password is too weak. Please use at least 8 characters with uppercase, lowercase, and numbers.";
+    case "auth/user-disabled":
+      return "This user account has been disabled.";
+    case "auth/user-not-found":
+    case "auth/wrong-password":
+    case "auth/invalid-credential":
+      return "Incorrect email or password.";
+    case "auth/too-many-requests":
+      return "Too many failed attempts. Please try again later.";
+    case "auth/network-request-failed":
+      return "Network connection error. Please check your internet connection.";
+    case "auth/invalid-phone-number":
+      return "Please enter a valid 10-digit Indian mobile number.";
+    case "auth/invalid-verification-code":
+      return "OTP is incorrect.";
+    case "auth/code-expired":
+      return "OTP has expired. Please click Resend OTP.";
+    default:
+      return "An error occurred during authentication. Please try again.";
+  }
+}
+
 // Sanitization Utilities
 export function sanitizeFullName(name: string): string {
   return name.trim().replace(/\s+/g, " ");
