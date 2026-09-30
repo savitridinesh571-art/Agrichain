@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { useAppContext } from "../context/AppProvider";
-import { ShoppingBag, User as UserIcon, Package, PlusCircle, LayoutDashboard, LogOut, Search, Sprout, Mic, X, MapPin, Globe } from "lucide-react";
+import { ShoppingBag, User as UserIcon, Package, PlusCircle, LayoutDashboard, LogOut, Search, Sprout, Mic, X, MapPin, Globe, Menu } from "lucide-react";
 import { getCropImage } from "../utils/cropImages";
 import type { Language } from "../i18n/translations";
 
@@ -11,6 +11,7 @@ export function Layout() {
   const location = useLocation();
   
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -186,8 +187,8 @@ export function Layout() {
               </span>
             )}
 
-            {/* Navigation Icons */}
-            <div className="flex items-center gap-1 md:gap-2">
+            {/* Desktop Navigation Icons */}
+            <div className="hidden md:flex items-center gap-2">
               
               {/* Customer Links */}
               {(!user || user.role === "CUSTOMER") && (
@@ -282,10 +283,37 @@ export function Layout() {
                 </div>
               )}
             </div>
+
+            {/* Mobile Cart Button (Customer) */}
+            {(!user || user.role === "CUSTOMER") && (
+              <Link
+                to="/cart"
+                className="md:hidden relative p-2 hover:bg-primary-container rounded-full transition"
+                title="Cart"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <ShoppingBag className="w-5 h-5" />
+                {totalCartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-secondary text-on-secondary text-[10px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center">
+                    {totalCartCount}
+                  </span>
+                )}
+              </Link>
+            )}
+
+            {/* Mobile Menu Hamburger Toggle */}
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 rounded-xl bg-primary-container/40 text-on-primary hover:bg-primary-container/60 transition"
+              aria-label="Toggle Navigation Drawer"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
 
-        {/* Mobile Search Bar with Auto Navigation */}
+        {/* Mobile Search Bar */}
         <div className="mt-2 md:hidden relative">
           <form onSubmit={handleSearchSubmit} className="relative">
             <Search className="w-4 h-4 absolute left-3 top-2.5 text-on-surface-variant" />
@@ -312,6 +340,144 @@ export function Layout() {
             )}
           </form>
         </div>
+
+        {/* Mobile Navigation Drawer Overlay */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden mt-3 pt-3 border-t border-outline/30 space-y-2 bg-[#1B4332] p-4 rounded-2xl shadow-2xl animate-in fade-in slide-in-from-top-3">
+            
+            {user && (
+              <div className="flex items-center justify-between pb-3 border-b border-white/10 text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-extrabold text-xs">
+                    {user.name.charAt(0)}
+                  </div>
+                  <div>
+                    <span className="font-bold text-white block leading-tight">{user.name}</span>
+                    <span className="text-[10px] text-amber-300 font-medium">{user.role} Account</span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    toggleRole();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="bg-white/10 hover:bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/20 transition"
+                >
+                  Switch to {user.role === "FARMER" ? "Customer" : "Farmer"}
+                </button>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <Link
+                to="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-3 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition"
+              >
+                <Sprout className="w-4 h-4 text-amber-300" />
+                <span>Marketplace</span>
+              </Link>
+
+              {user?.role === "FARMER" ? (
+                <>
+                  <Link
+                    to="/farmer"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-3 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition"
+                  >
+                    <LayoutDashboard className="w-4 h-4 text-emerald-300" />
+                    <span>Farmer Hub</span>
+                  </Link>
+
+                  <Link
+                    to="/farmer/dashboard"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-3 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition"
+                  >
+                    <Mic className="w-4 h-4 text-amber-300" />
+                    <span>Voice Assistant</span>
+                  </Link>
+
+                  <Link
+                    to="/farmer/add"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-3 bg-amber-400 text-[#1B4332] rounded-xl text-xs font-extrabold flex items-center gap-2 transition shadow-md"
+                  >
+                    <PlusCircle className="w-4 h-4" />
+                    <span>Add Harvest</span>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/cart"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-3 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition"
+                  >
+                    <ShoppingBag className="w-4 h-4 text-amber-300" />
+                    <span>Cart ({totalCartCount})</span>
+                  </Link>
+
+                  <Link
+                    to="/orders"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-3 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition"
+                  >
+                    <Package className="w-4 h-4 text-emerald-300" />
+                    <span>My Orders</span>
+                  </Link>
+                </>
+              )}
+
+              {user ? (
+                <Link
+                  to="/profile"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-3 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition"
+                >
+                  <UserIcon className="w-4 h-4 text-emerald-300" />
+                  <span>Profile</span>
+                </Link>
+              ) : null}
+            </div>
+
+            <div className="pt-2 border-t border-white/10">
+              {user ? (
+                <button
+                  onClick={() => {
+                    logout();
+                    setIsMobileMenuOpen(false);
+                    navigate("/login");
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-200 border border-red-400/30 text-xs font-extrabold flex items-center justify-center gap-2 transition"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign Out</span>
+                </button>
+              ) : (
+                <div className="flex gap-2">
+                  <Link
+                    to="/login"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex-1 py-2.5 bg-white/10 text-white font-extrabold text-xs rounded-xl text-center border border-white/20"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/register"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex-1 py-2.5 bg-amber-400 text-[#1B4332] font-black text-xs rounded-xl text-center shadow-md"
+                  >
+                    Register
+                  </Link>
+                </div>
+              )}
+            </div>
+
+          </div>
+        )}
       </header>
 
       {/* Main Container */}
